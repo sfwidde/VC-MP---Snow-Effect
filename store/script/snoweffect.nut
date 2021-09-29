@@ -6,7 +6,7 @@
 * December 14, 2020 - September 28, 2021 (UTC).
 */
 
-snowEffect <-
+SnowEffect <-
 {
     elementsHandler = [],
     lastSpriteCreationTicks = 0,
@@ -53,50 +53,38 @@ snowEffect <-
     {
         local argType = typeof enabled;
 
-        switch (argType)
-        {
-            case "bool": isEnabled = enabled; break;
-            default:     throw ::format("argType is '%s' - must be 'bool'", argType);
-        }
+        if (argType == "bool")
+            isEnabled = enabled;
+        else throw ::format("argType is '%s' - it must be 'bool'", argType);
     }
 
     function SetCreationFrequency(ms)
     {
         local argType = typeof ms;
 
-        switch (argType)
+        if (argType == "integer")
         {
-            case "integer":
             if (ms > 0)
                 spriteCreationFrequency = ms;
-            else throw ::format("ms is %d - must be > 0", ms);
-            
-            break;
-            
-            default:
-            throw ::format("argType is '%s' - must be 'integer'", argType);
+            else throw ::format("ms is %d - it must be > 0", ms);
         }
+        else throw ::format("argType is '%s' - it must be 'integer'", argType);
     }
 
     function SetMaxSize(size)
     {
         local argType = typeof size;
 
-        switch (argType)
+        if (argType == "integer")
         {
-            case "integer":
             if (size > 0)
             {
                 if (size <= 25)
                     maxSpriteSize = size;
-                else throw ::format("size is %u - must be <= 25", size);
+                else throw ::format("size is %u - it must be <= 25", size);
             }
-            else throw ::format("size is %d - must be > 0", size);
-
-            break;
-
-            default:
-            throw ::format("argType is '%s' - must be 'integer'", argType);
+            else throw ::format("size is %d - it must be > 0", size);
         }
+        else throw ::format("argType is '%s' - it must be 'integer'", argType);
     }
 };
