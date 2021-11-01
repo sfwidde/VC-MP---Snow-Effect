@@ -8,14 +8,12 @@
 
 snowEffect <-
 {
-    // Variables whose values you shouldn't mess with.
     elementHandler = [],
     lastTicks      = 0,
     
-    // Variables whose values you can mess with.
-    enabled       = true, # Must be a bool.
-    waitTime      = 250,  # Must be an integer.
-    maxSpriteSize = 3     # Must be an integer.
+    enabled       = true,
+    waitTime      = 250,
+    maxSpriteSize = 3
 
     function Process()
     {
@@ -39,7 +37,7 @@ snowEffect <-
                 // Append the created sprite into elementHandler for later access.
                 elementHandler.append(newSprite);
                 // We let the client know a new sprite has just been created so it must wait a while before creating another sprite again
-                // to avoid filling the screen with new sprites on each frame.
+                // to prevent filling the screen with new sprites on each frame.
                 lastTicks = currentTicks;
             }
         }
