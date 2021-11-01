@@ -1,5 +1,5 @@
 /*
-* https://github.com/sfwidde/VCMP-Snow-Effect
+* https://github.com/sfwidde/VC-MP-Snow-Effect
 *
 * Snow Effect for Vice City: Multiplayer (VC:MP) 0.4 by sfwidde ([R3V]Kelvin).
 *
