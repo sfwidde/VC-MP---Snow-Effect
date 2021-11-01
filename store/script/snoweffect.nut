@@ -1,31 +1,32 @@
 /*
-* Snow effect for Vice City: Multiplayer (VC:MP) by sfwidde ([R3V]Kelvin).
-*
 * https://github.com/sfwidde/VCMP-Snow-Effect
+*
+* Snow Effect for Vice City: Multiplayer (VC:MP) 0.4 by sfwidde ([R3V]Kelvin).
 *
 * December 14, 2020 - September 28, 2021 (UTC).
 */
 
-SnowEffect <-
+snowEffect <-
 {
-    elementsHandler = [],
-    lastSpriteCreationTicks = 0,
-
-    // Modifiable values.
-    isEnabled = true,
-    spriteCreationFrequency = 250,
-    maxSpriteSize = 3
+    // Variables whose values you shouldn't mess with.
+    elementHandler = [],
+    lastTicks      = 0,
+    
+    // Variables whose values you can mess with.
+    enabled       = true, # Must be a bool.
+    waitTime      = 250,  # Must be an integer.
+    maxSpriteSize = 3     # Must be an integer.
 
     function Process()
     {
         // The snow effect is enabled.
-        if (isEnabled)
+        if (enabled)
         {
             local currentTicks = ::Script.GetTicks();
 
-            if ((currentTicks - lastSpriteCreationTicks) >= spriteCreationFrequency)
+            if ((currentTicks - lastTicks) >= waitTime)
             {
-                // Create a sprite.
+                // Create a new sprite.
                 local newSprite   = ::GUISprite();
                 local screenWidth = ::GUI.GetScreenSize().X;
                 local spriteSize  = screenWidth * ((::rand() % (maxSpriteSize + 1) + maxSpriteSize) * 0.01);
@@ -35,56 +36,17 @@ SnowEffect <-
                 newSprite.Position = ::VectorScreen(::rand() % (screenWidth - spriteSize), spriteSize * -1.0);
                 newSprite.Colour   = ::Colour(255, 255, 255, 255);
 
-                // Appends the created sprite instance into an array for later access.
-                elementsHandler.append(newSprite);
-                // The client now knows we have just created another sprite so it must wait a while before creating another sprite again
+                // Append the created sprite into elementHandler for later access.
+                elementHandler.append(newSprite);
+                // We let the client know a new sprite has just been created so it must wait a while before creating another sprite again
                 // to avoid filling the screen with new sprites on each frame.
-                lastSpriteCreationTicks = currentTicks;
+                lastTicks = currentTicks;
             }
         }
 
-        // Move them downward.
-        foreach (index, sprite in elementsHandler)
+        // Move on-screen sprites downwards. If they are not visible anymore, delete them.
+        foreach (index, sprite in elementHandler)
             if ((sprite.Position.Y += (sprite.Size.X * 0.1)) > ::GUI.GetScreenSize().Y)
-                elementsHandler.remove(index);
-    }
-
-    function SetEnabled(enabled)
-    {
-        local argType = typeof enabled;
-
-        if (argType == "bool")
-            isEnabled = enabled;
-        else throw ::format("argType is '%s' - it must be 'bool'", argType);
-    }
-
-    function SetCreationFrequency(ms)
-    {
-        local argType = typeof ms;
-
-        if (argType == "integer")
-        {
-            if (ms > 0)
-                spriteCreationFrequency = ms;
-            else throw ::format("ms is %d - it must be > 0", ms);
-        }
-        else throw ::format("argType is '%s' - it must be 'integer'", argType);
-    }
-
-    function SetMaxSize(size)
-    {
-        local argType = typeof size;
-
-        if (argType == "integer")
-        {
-            if (size > 0)
-            {
-                if (size <= 25)
-                    maxSpriteSize = size;
-                else throw ::format("size is %u - it must be <= 25", size);
-            }
-            else throw ::format("size is %d - it must be > 0", size);
-        }
-        else throw ::format("argType is '%s' - it must be 'integer'", argType);
+                elementHandler.remove(index);
     }
 };
