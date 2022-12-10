@@ -4,37 +4,29 @@ Find out [_what does it look like_](https://youtu.be/vtSrnNbO_vs).
 - Download this repository by clicking on *Code > Download ZIP*.
 - Paste the *store* folder found in the .zip file you just downloaded to your server's directory.
 - Go to the file where your `Script::ScriptLoad()` and `Script::ScriptProcess()` client-side functions are defined (typically, in *store/script/main.nut*), then:
-  - Load the script by adding `dofile("snoweffect.nut");` at the very top of your main script.
+  - Load the script by doing `dofile("snoweffect.nut");`.
   - Append `::snowEffect.PreloadItems();` to your `Script::ScriptLoad()` function body.
   - Append `::snowEffect.ProcessItems();` to your `Script::ScriptProcess()` function body.
-  - If you followed the steps correctly your main script would end up looking more or less like this:
-    ```
-    ...
-    dofile("snoweffect.nut");
-    ...
-    
-    function Script::ScriptLoad()
-    {
-      ...
-      ::snowEffect.PreloadItems();
-      ...
-    }
-    
-    function Script::ScriptProcess()
-    {
-      ...
-      ::snowEffect.ProcessItems();
-      ...
-    }
-    ```
 
 ### Snow Effect behaviour
-You can control how the Snow Effect behaves for every player in your server by changing the value that the following key hold:
+##### Constants
+- `MAX_SNOW_EFFECT_ITEMS`
+  - **Type:** *int*.
+  - **Acceptable values:** any integer that is at least 1.
+  - **Description:** how many snow items should be visible on the screen at the same time.
+- `MIN_SNOW_EFFECT_ITEM_SIZE`
+  - **Type:** *float*.
+  - **Acceptable values:** any floating-point value greater than 0.0.
+  - **Description:** minimum value a snow item (sprite) size can have.
+- `MAX_SNOW_EFFECT_ITEM_SIZE`
+  - **Type:** *float*.
+  - **Acceptable values:** any floating-point value greater or equal than `MIN_SNOW_EFFECT_ITEM_SIZE`.
+  - **Description:** maximum value a snow item (sprite) size can have.
+
+##### Table keys
 - `snowEffect.enabled`
   - **Type:** *bool*.
   - **Acceptable values:** either `true` or `false`.
-  - **Description:** whether the Snow Effect is enabled or not. When set to `true` it will remain enabled, disabled otherwise. This is useful when for example your player enters an interior -- you'd want to disable the snow effect in such scenario.
+  - **Description:** whether the Snow Effect is enabled or not. When set to `true` it will remain enabled, disabled otherwise. This is useful when for example your player enters an interior -- you'd want to disable the snow effect in such case.
 
-Please note that by not following the acceptable values for the above key may, or may not lead to undesired behaviour.
-
-You can also change this constant value `MAX_SNOW_EFFECT_ITEMS` present in *snoweffect.nut* file to any value you want as long as it's at least 1. The higher the value, the more snow items will appear on the screen. Since it is a constant, its value cannot be changed after your scripts initialize and unlike the previous key, it is global for everyone on your server. If you want it to be individually modifiable for every player please let me know!
+Please note that by not following the acceptable values for the above constants/keys may, or may not lead to undesired behaviour.
