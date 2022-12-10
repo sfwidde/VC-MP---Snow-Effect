@@ -16,15 +16,15 @@ Find out [_what does it look like_](https://youtu.be/vtSrnNbO_vs).
     function Script::ScriptLoad()
     {
       ...
-    	::snowEffect.PreloadItems();
-    	...
+      ::snowEffect.PreloadItems();
+      ...
     }
     
     function Script::ScriptProcess()
     {
       ...
-    	::snowEffect.ProcessItems();
-    	...
+      ::snowEffect.ProcessItems();
+      ...
     }
     ```
 
