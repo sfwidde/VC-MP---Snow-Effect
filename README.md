@@ -33,6 +33,8 @@ You can control how the Snow Effect behaves for every player in your server by c
 - `snowEffect.enabled`
   - **Type:** *bool*.
   - **Acceptable values:** either `true` or `false`.
-  - **Description:** whether the Snow Effect is enabled or not. When set to `true` it will remain enabled, disabled otherwise. This is useful when for example your player enters an interior -- you would want to disable the snow effect in such scenario.
+  - **Description:** whether the Snow Effect is enabled or not. When set to `true` it will remain enabled, disabled otherwise. This is useful when for example your player enters an interior -- you'd want to disable the snow effect in such scenario.
 
 Please note that by not following the acceptable values for the above key may, or may not lead to undesired behaviour.
+
+You can also change this constant value `MAX_SNOW_EFFECT_ITEMS` present in *snoweffect.nut* file to any value you want as long as it's at least 1. The higher the value, the more snow items will appear on the screen. Since it is a constant, its value cannot be changed after your scripts initialize and unlike the previous key, it is global for everyone on your server. If you want it to be individually modifiable for every player please let me know!
