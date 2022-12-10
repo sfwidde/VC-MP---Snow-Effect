@@ -1,50 +1,82 @@
-/*
-* https://github.com/sfwidde/VC-MP-Snow-Effect
-*
-* Snow Effect for Vice City: Multiplayer (VC:MP) 0.4 by sfwidde ([R3V]Kelvin).
-*
-* December 14, 2020 - September 28, 2021 (UTC).
-*/
+// https://github.com/sfwidde/VC-MP-Snow-Effect
+
+const MAX_SNOW_EFFECT_ITEMS = 10;
+
+class SnowItem
+{
+	sprite = null;
+}
+
+function SnowItem::constructor()
+{
+	sprite = ::GUISprite();
+	Rewind();
+}
+
+function SnowItem::Rewind()
+{
+	local ssX = ::GUI.GetScreenSize().X;
+	// Screen width * random float between 0.01 and 0.08.
+	//
+	// Random float generator algorithm:
+	// https://stackoverflow.com/a/686373/14197165
+	local size = ssX * ((::rand() / (RAND_MAX / 0.07)) + 0.01);
+
+	// Random texture. You can add/edit/remove textures too!
+	sprite.SetTexture(::format("ice%u.png", ::rand() % 2));
+	sprite.Colour   = ::Colour(255, 255, 255);
+	sprite.Size     = ::VectorScreen(size, size);
+	sprite.Position = ::VectorScreen(::rand() % (ssX - size + 1), -size);
+}
+
+function SnowItem::Process()
+{
+	// Does item need to be rewound i.e. it's not visible
+	// on the screen anymore?
+	if (sprite.Position.Y > ::GUI.GetScreenSize().Y)
+	{
+		return true;
+	}
+
+	// Calculation based on sprite size, simulating its weight as if it were an
+	// IRL object. ceil() will help to prevent small items from being stuck on
+	// the screen forever and never moving downwards on small resolutions.
+	sprite.Position.Y += ::ceil((sprite.Size.X + sprite.Size.Y) * 0.03);
+	return false;
+}
 
 snowEffect <-
 {
-    elementHandler = [],
-    lastTicks      = 0,
-    
-    enabled       = true,
-    waitTime      = 250,
-    maxSpriteSize = 3
+	items = ::array(MAX_SNOW_EFFECT_ITEMS),
 
-    function Process()
-    {
-        // The snow effect is enabled.
-        if (enabled)
-        {
-            local currentTicks = ::Script.GetTicks();
-
-            if ((currentTicks - lastTicks) >= waitTime)
-            {
-                // Create a new sprite.
-                local newSprite   = ::GUISprite();
-                local screenWidth = ::GUI.GetScreenSize().X;
-                local spriteSize  = screenWidth * ((::rand() % (maxSpriteSize + 1) + maxSpriteSize) * 0.01);
-
-                newSprite.SetTexture(::format("ice%d.png", ::rand() % 2));
-                newSprite.Size     = ::VectorScreen(spriteSize, spriteSize - 5.0);
-                newSprite.Position = ::VectorScreen(::rand() % (screenWidth - spriteSize), spriteSize * -1.0);
-                newSprite.Colour   = ::Colour(255, 255, 255, 255);
-
-                // Append the created sprite into elementHandler for later access.
-                elementHandler.append(newSprite);
-                // We let the client know a new sprite has just been created so it must wait a while before creating another sprite again
-                // to prevent filling the screen with new sprites on each frame.
-                lastTicks = currentTicks;
-            }
-        }
-
-        // Move on-screen sprites downwards. If they are not visible anymore, delete them.
-        foreach (index, sprite in elementHandler)
-            if ((sprite.Position.Y += (sprite.Size.X * 0.1)) > ::GUI.GetScreenSize().Y)
-                elementHandler.remove(index);
-    }
+	// Is the snow effect enabled?
+	enabled = true
 };
+
+function snowEffect::PreloadItems()
+{
+	// Fill our whole array with new 'SnowItem' objects.
+	for (local i = 0; i < MAX_SNOW_EFFECT_ITEMS; ++i)
+	{
+		items[i] = ::SnowItem();
+	}
+}
+
+function snowEffect::ProcessItems()
+{
+	foreach (item in items)
+	{
+		// Don't rewind if:
+		// A) Current item doesn't need to be rewound yet.
+		// B) The snow effect is disabled (items will still be processed if so
+		// anyway so on-screen items don't suddenly freeze if we decide to
+		// disable the snow effect at some point).
+		if (!item.Process() || !enabled)
+		{
+			continue;
+		}
+
+		// Rewind it!
+		item.Rewind();
+	}
+}
